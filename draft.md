@@ -59,7 +59,7 @@ YOLOv8 作為最新版本，在技術上進行了多項改進，特別針對邊�
 
 YOLO 提供多種模式來應對不同的影像任務需求，針對手語辨識的功能開發，在需要對手型進行快速識別與定位的情況下，我們選擇了YOLO提供的物件偵測（`task=detect`）功能，從影像中檢測並標註手部的邊界框與類別標籤。為了進一步優化模型，我們也使用了 YOLO 的分類 (`task=classify`) 功能，將任務重點放在手型的分類上，這有助於提高辨識的準確度，並使我們能更有效地區分不同手語字母或手勢。這種方式讓我們可以在不同的任務需求下靈活應用 YOLO 的特性，從而達到最佳的辨識效果。
 
-![alt yolostructure](yolo8structure.webp)[^7]
+![alt yolostructure](images/yolo8structure.webp)[^7]
 
 #### 3-4 訓練的參數設定
 
@@ -71,13 +71,13 @@ YOLO 提供多種模式來應對不同的影像任務需求，針對手語辨識
 
 #### 3-5 模型評估指標
 
-在我們訓練的最終結果（第 150 個 epoch，總共 150 個 epoch）中，模型的損失函數包括邊界框回歸損失（`box_loss`）、分類損失（`cls_loss`）和分佈焦點損失（`dfl_loss`），這些損失分別為 0.3927、0.2505 和 1.024。這些數值表明模型在預測物件邊界框、類別以及邊界框精確度方面的誤差，損失值越低，表示模型預測越接近真實值。
+在我們訓練的最終結果（第 150 個 epoch，總共 150 個 epoch）中，模型的損失函數包括邊界框回歸損失（`box_loss`）、分類損失（`cls_loss`）和分佈焦點損失（`dfl_loss`），這些損失分別為 0.27564、0.17242 和 0.93065。這些數值表明模型在預測物件邊界框、類別以及邊界框精確度方面的誤差，損失值越低，表示模型預測越接近真實值。
 
-性能指標方面，我們的模型在精確率（Precision, $P$）上達到了 0.953，意味著預測的物件中有 95.3% 是正確的；召回率（Recall, $R$）為 0.868，表示實際存在的物件中有 86.8% 被正確檢測到。此外，平均精度 `mAP50` 為 0.959，`mAP50-95` 為 0.803，這些數值反映了模型在不同 IoU（Intersection over Union）門檻下的檢測精度。總體來說，這些數據表明我們的模型具有甚高的準確性和穩定性。
+性能指標方面，我們的模型在邊界框精確率（Precision, $P$）上達到了 0.95166，意味著物件中有大約 95% 是正確的；召回率（Recall, $R$）為 0.84991，表示實際存在的物件中有 85% 被正確檢測到。此外，平均精度 `mAP50` 為 0.94697，`mAP50-95` 為 0.803，這些數值反映了模型在不同 IoU（Intersection over Union）門檻下的檢測精度。總體來說，這些數據表明我們的模型具有甚高的準確性和穩定性。
 
-![alt confusion matrix](confusion_matrix_normalized.png)
-![alt losses epoch detection](losses_epoch_detection_20240901.png)
-![alt metrics epoch detection](metrics_epoch_detection_20240901.png)
+![alt confusion matrix](images/confusion_matrix_normalized.png)
+![alt losses epoch detection](images/losses_epoch_detection_20240901.png)
+![alt metrics epoch detection](images/metrics_epoch_detection_20240901.png)
 
 ### 4 Web框架與部署
 

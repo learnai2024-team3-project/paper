@@ -30,8 +30,8 @@ public class ClassName {
         System.out.println("Field1: " + field1 + ", Field2: " + field2);
     }
 
-    public static void main(String[] args) {
-        ClassName obj = new ClassName(10, "Hello");
-        obj.displayInfo();
-    }
+    // public static void main(String[] args) {
+    //     ClassName obj = new ClassName(10, "Hello");
+    //     obj.displayInfo();
+    // }
 }

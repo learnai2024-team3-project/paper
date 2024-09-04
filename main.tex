@@ -72,7 +72,7 @@ YOLOv8, 美國手語, Django
 在本研究中，我們主要參考了現有的手語辨識模型和相關技術，並基於這些技術進行了應用與改進。由於時間與資源限制，我們未進行廣泛的文獻回顧，而是著重於實踐中高效且被證明有效的技術方案。這些參考模型的選擇是基於它們在相關研究中的成功應用，並結合我們的需求進行了具體的調整與優化，以確保在有限的時間和資源內達到預期的辨識效果。
 
 \subsection{Sign Language on Hugging Face}
-這個專案使用名為 HuggingPics 的圖像收集工具 \cite{ravenonur2024sign, nate2021hugging} 並發佈在 Hugging Face。該模型基於 PyTorch 架構，並整合到  生態系統中。專案展示了如何使用圖像分類器進行手語辨識。根據自我報告，該模型的準確率達到 100\%。專案中提供了 ASL 字母的範例圖像，以展示模型的功能。然而，由於該模型目前缺乏足夠的活動，尚無法部署在 Hugging Face 的推理 API 上。
+這個專案使用名為 HuggingPics 的圖像收集工具 \cite{ravenonur2024sign, nate2021hugging} 並發佈在 Hugging Face。HuggingPics 使用 Google 的 Vision Transformer (ViT) ImageNet-21k 作為模型，並利用 PyTorch Lightning 進行微調。根據該專案自我報告，該模型的準確率達到 100\%。專案還提供了 ASL 字母的範例圖像，以展示辨識效果。
 
 \subsection{ASL Fingerspelling Recognition w/ TensorFlow}
 此 Kaggle 專案由 Luiz Gustavo Martins 等人提出，取得 2023 年 Google 美國手語拼字辨識競賽的金牌獎。該專案展示如何使用 TensorFlow 框架和自行搭建的 ASLFR Transformer 處理經過 MediaPipe\footnote{\url{https://github.com/google-ai-edge/mediapipe}} 擷取的雙手關鍵點（keypoint）序列資料\cite{gusthema2024asl}。其所使用的資料集非常全面，包含 67,208 筆序列資料。而且專案結構完整，包含資料預處理、模型訓練和評估，提供了 TensorFlow 在 ASL 辨識任務中的有效應用實例。
@@ -81,18 +81,17 @@ YOLOv8, 美國手語, Django
 Muhammad Moin 的這個 GitHub 專案著重於使用 YOLOv8 模型來檢測和辨識手語字母\cite{muhammadmoinfaisal2024sign}。YOLOv8 以其在物件偵測任務中的速度和精確度而著稱，在此應用於識別和分類對應於字母的手勢。專案提供了詳細的說明文件，涵蓋了模型的設置、使用自定義資料集進行訓練，以及部署模型進行即時辨識的過程。使用 YOLOv8 在需要快速且精準檢測的場景中具有優勢，使其適合於即時應用如手語翻譯。
 
 \subsection{Action Detection for Sign Language}
-Nicholas Renotte 的 GitHub 專案使用 MediaPipe 擷取手部、臉部和上半身關鍵點座標，再自行錄製三種手語影像序列，以便訓練長短期記憶模型（LSTM）\cite{nick
-nochnack2024action}。該專案不僅能辨識靜態手語，還能檢測構成手語交流基礎的動作。專案包括了設置環境、訓練模型和部署模型進行即時檢測的 YouTube 教學影片。 
+Nicholas Renotte 的 GitHub 專案使用 MediaPipe 擷取手部、臉部和上半身關鍵點座標，再自行錄製三種手語影像序列，以便訓練長短期記憶模型（LSTM）\cite{nicknochnack2024action}。該專案不僅能辨識靜態手語，還能檢測構成手語交流基礎的動作。專案包括了設置環境、訓練模型和部署模型進行即時檢測的 YouTube 教學影片。 
 
 \section{模型技術說明}
 
 經過需求評估之後，我們採用 Muhammad Moin 的 \textit{Sign Language Alphabets Detection and Recognition using YOLOv8} 作為藍本發展深度學習模型，詳細的說明如下。
 
 \subsection{模型訓練環境 Kaggle}
-Kaggle\footnote{\url{https://www.kaggle.com/}.} 提供了一個高度整合的資料科學平台，擁有資料集、Notebook 環境以及計算加速裝置，如 GPU 和 TPU，讓資料科學家可以輕鬆進行模型訓練和測試。本專案選擇在 Kaggle 平台上訓練模型，利用其雲端環境和豐富的 GPU 資源來管理大型資料集和模型訓練過程。為了加速訓練並提高計算效率，我們使用了兩個 NVIDAI Tesla 4 GPU 進行並行計算，這種雙 GPU 配置能夠有效處理 YOLO 模型在訓練過程中所需的大量計算和記憶體資源，特別適合於物件偵測任務。
+Kaggle\footnote{\url{https://www.kaggle.com/}.} 提供了一個高度整合的資料科學平台，擁有資料集、Notebook 環境以及計算加速裝置，如 GPU 和 TPU，讓資料科學家可以輕鬆進行模型訓練和測試。本專案選擇在 Kaggle 平台上訓練模型，利用其雲端環境和豐富的 GPU 資源來管理大型資料集和模型訓練過程。為了加速訓練並提高計算效率，我們使用了兩個 NVIDIA Tesla 4 GPU 進行並行計算，這種雙 GPU 配置能夠有效處理 YOLO 模型在訓練過程中所需的大量計算和記憶體資源，特別適合於物件偵測任務。
 
 \subsection{Roboflow 平台與資料集}
-Roboflow\footnote{\url{https://roboflow.com/}.} 提供了強大的電腦視覺工具，支持資料集管理、標註、增強和模型部署，使者可以有效率地進行圖像標註和增強。因此，本專案採用 Roboflow 平台來準備資料集，再透過Roboflow API 下載資料集至 Kaggle 平台，使用自定義的配置檔案來指定訓練和驗證資料的位置，以及模型應學習的類別標籤，為模型提供訓練的基礎。
+Roboflow\footnote{\url{https://roboflow.com/}.} 提供了強大的電腦視覺工具，支持資料集管理、標註、增強和模型部署，使用者可以有效率地進行圖像標註和增強。因此，本專案採用 Roboflow 平台來準備資料集，再透過Roboflow API 下載資料集至 Kaggle 平台，使用自定義的配置檔案來指定訓練和驗證資料的位置，以及模型應學習的類別標籤，為模型提供訓練的基礎。
 
 本專案採用的資料係參考 David Lee\cite{davidlee2024asl} 在 Roboflow 所提供的資料集，主要圖像共 720 張，其中訓練集為 504 張（70\%），驗證集 144張（20\%），以及測試集 72 張（10\%）。除此資料集之外，又於該平台蒐集 ASL 字母圖像至 16,993 張，並將擴增之資料集再度投入訓練，以取得最佳成果。 
 
@@ -126,7 +125,6 @@ YOLOv8\footnote{\url{https://github.com/ultralytics/ultralytics}} 是 Ultralytic
     \caption{性能指標 vs. 迭代週期}
     \label{fig:metric-epoch}
 \end{figure}
-
 
 \begin{figure}[htbp]
     \centering
